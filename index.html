@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APavan_Diagrama de Interação — Pilar NBR 6118</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:#0b1220;font-family:'Barlow',sans-serif;color:#c8d8e8;}
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:#0b1220;}
+::-webkit-scrollbar-thumb{background:#1e3a5a;border-radius:3px;}
+
+/* ─── HEADER ─── */
+header{
+  background:linear-gradient(135deg,#0e1a2e 0%,#131f35 100%);
+  border-bottom:1px solid #1e3a5a;
+  padding:14px 28px;
+  display:flex;align-items:center;gap:20px;
+  box-shadow:0 2px 20px rgba(0,0,0,.5);
+  flex-shrink:0;
+}
+.hdr-badge{
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;
+  background:linear-gradient(135deg,#00b4ff,#00e5b4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+header h1{font-size:18px;font-weight:600;color:#e0eeff;letter-spacing:.4px;}
+.hdr-sub{font-family:'Share Tech Mono',monospace;font-size:11px;color:#2a6a90;letter-spacing:1px;margin-top:2px;}
+.hdr-div{width:1px;height:40px;background:#1e3a5a;flex-shrink:0;}
+
+/* ─── LAYOUT ─── */
+.wrap{display:flex;height:calc(100vh - 60px);overflow:hidden;}
+.left{width:340px;flex-shrink:0;background:#0e1a2e;border-right:1px solid #1e3a5a;overflow-y:auto;padding:16px;}
+.right{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px;
+  background:#0b1220;
+  background-image:radial-gradient(ellipse at 20% 20%,rgba(0,180,255,.04) 0%,transparent 60%),
+                   radial-gradient(ellipse at 80% 80%,rgba(0,255,180,.03) 0%,transparent 60%);}
+
+/* ─── PANEL SECTIONS ─── */
+.psec{background:rgba(255,255,255,.02);border:1px solid #1a3050;border-radius:6px;padding:14px;margin-bottom:14px;}
+.sec-title{
+  font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;color:#00b4ff;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,#1e3a5a,transparent);}
+
+/* ─── INPUTS ─── */
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.igrp{display:flex;flex-direction:column;gap:3px;}
+.igrp label{font-size:11px;color:#6899b8;letter-spacing:.4px;}
+.igrp label .u{color:#3a6a88;font-size:10px;font-family:'Share Tech Mono',monospace;}
+input[type=number]{
+  background:#0b1520;border:1px solid #1e3a5a;border-radius:4px;
+  color:#a0d4f5;font-family:'Share Tech Mono',monospace;font-size:13px;
+  padding:6px 9px;width:100%;outline:none;transition:border-color .2s,box-shadow .2s;
+}
+input[type=number]:focus{border-color:#00b4ff;box-shadow:0 0 0 2px rgba(0,180,255,.12);}
+
+/* ─── LAYERS TABLE ─── */
+#layerTable{width:100%;border-collapse:collapse;margin-top:6px;}
+#layerTable th{
+  font-size:10px;color:#4a7fa0;font-family:'Share Tech Mono',monospace;
+  letter-spacing:1px;text-transform:uppercase;padding:5px 6px;
+  text-align:center;border-bottom:1px solid #1e3a5a;
+}
+#layerTable td{padding:3px 4px;text-align:center;}
+#layerTable td input{width:58px;text-align:center;padding:4px 6px;font-size:12px;}
+.lbl-td{font-family:'Share Tech Mono',monospace;font-size:10px;color:#4a7fa0;}
+.pos-td{font-family:'Share Tech Mono',monospace;font-size:11px;color:#5ab4d4;}
+
+/* ─── BUTTONS ─── */
+.btn-row{display:flex;gap:8px;margin-top:10px;}
+.btn{
+  flex:1;padding:7px 10px;border-radius:4px;border:none;cursor:pointer;
+  font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;transition:all .2s;
+}
+.btn-add{background:linear-gradient(135deg,#005a8a,#0090d0);color:#fff;}
+.btn-add:hover{opacity:.85;}
+.btn-rem{background:rgba(255,80,80,.1);color:#ff5050;border:1px solid rgba(255,80,80,.3);}
+.btn-rem:hover{background:rgba(255,80,80,.2);}
+
+/* ─── INFO CHIPS ─── */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.chip{
+  background:rgba(0,180,255,.08);border:1px solid rgba(0,180,255,.15);
+  border-radius:3px;padding:3px 8px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:#5ab4d4;
+}
+
+/* ─── COMPUTED PARAMS ─── */
+.cparam{font-family:'Share Tech Mono',monospace;font-size:11px;color:#4a8aac;line-height:2;}
+.cparam span{color:#7ad4f4;}
+
+/* ─── RESULTS STRIP ─── */
+.rstrip{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
+.rcard{
+  background:#0e1a2e;border:1px solid #1e3a5a;border-radius:6px;
+  padding:11px 13px;position:relative;overflow:hidden;
+}
+.rcard::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(to bottom,#00b4ff,#00e5b4);}
+.rcard .rl{font-size:10px;color:#4a7fa0;font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-bottom:3px;}
+.rcard .rv{font-size:17px;font-weight:600;color:#00d4ff;font-family:'Share Tech Mono',monospace;}
+.rcard .rs{font-size:10px;color:#3a6a88;font-family:'Share Tech Mono',monospace;margin-top:1px;}
+.warn{color:#ff8040!important;}
+.err{color:#ff4040!important;}
+
+/* ─── CHART ─── */
+.chart-box{
+  background:#0e1a2e;border:1px solid #1e3a5a;border-radius:8px;padding:18px;
+  flex:1;min-height:460px;
+}
+.chart-title{
+  font-size:12px;font-weight:500;color:#7ab4d4;
+  font-family:'Share Tech Mono',monospace;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.chart-title::before{content:'▶';color:#00b4ff;font-size:8px;}
+.chart-sub{color:#4a6a80;font-size:10px;letter-spacing:1px;}
+
+#svgChart{width:100%;display:block;user-select:none;}
+
+/* ─── TOOLTIP ─── */
+#tooltip{
+  position:fixed;display:none;
+  background:#0e1a2e;border:1px solid #1e4a6a;border-radius:4px;
+  padding:8px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;
+  pointer-events:none;z-index:99;box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+#tooltip p{color:#7ab4d4;margin:2px 0;}
+#tooltip span{color:#00d4ff;}
+
+/* ─── LEGEND ─── */
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;}
+.leg-item{display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#4a7fa0;}
+.leg-line{width:22px;height:2px;}
+
+/* ─── BOTTOM GRID ─── */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.bcard{background:#0e1a2e;border:1px solid #1e3a5a;border-radius:6px;padding:14px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.bar-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:#3a6a88;width:70px;flex-shrink:0;}
+.bar-track{flex:1;height:6px;background:#0b1520;border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;background:linear-gradient(to right,#00b4ff,#00e5b4);border-radius:3px;transition:width .3s;}
+.bar-val{font-family:'Share Tech Mono',monospace;font-size:11px;color:#00d4ff;width:18px;text-align:right;}
+
+.chk-row{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:11px;line-height:2;}
+.chk-ok{color:#00e5a0;}
+.chk-fail{color:#ff4040;}
+
+@media(max-width:820px){
+  .wrap{flex-direction:column;height:auto;}
+  .left{width:100%;height:auto;}
+  .bottom-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="hdr-badge">NBR 6118 · ABNT</div>
+    <h1>APavan_Diagrama de Interação — Pilar de Concreto Armado</h1>
+  </div>
+  <div class="hdr-div"></div>
+  <div>
+    <div class="hdr-sub">INTERACTION DIAGRAM · RECTANGULAR COLUMN SECTION</div>
+    <div id="hdrInfo" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:#2a5a78;margin-top:2px;">β₁=0.80 · φPn,max=— kN</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- ═══ LEFT PANEL ═══ -->
+  <div class="left">
+
+    <div class="psec">
+      <div class="sec-title">Seção Transversal</div>
+      <div class="igrid">
+        <div class="igrp">
+          <label>b — largura <span class="u">cm</span></label>
+          <input type="number" id="inp_b" value="14" min="5" step="1">
+        </div>
+        <div class="igrp">
+          <label>h — altura <span class="u">cm</span></label>
+          <input type="number" id="inp_h" value="30" min="10" step="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="psec">
+      <div class="sec-title">Materiais</div>
+      <div class="igrid">
+        <div class="igrp">
+          <label>f<sub>ck</sub> <span class="u">MPa</span></label>
+          <input type="number" id="inp_fck" value="25" min="20" max="90" step="5">
+        </div>
+        <div class="igrp">
+          <label>f<sub>yk</sub> <span class="u">MPa</span></label>
+          <input type="number" id="inp_fyk" value="500" min="250" max="600" step="50">
+        </div>
+        <div class="igrp" style="grid-column:span 2">
+          <label>E<sub>s</sub> <span class="u">MPa</span> <span id="es_auto_badge" style="display:none;background:rgba(0,229,180,.12);border:1px solid rgba(0,229,180,.25);border-radius:3px;padding:1px 6px;font-size:9px;color:#00e5b4;font-family:'Share Tech Mono',monospace;letter-spacing:1px;margin-left:4px;">AUTO NBR 6118</span></label>
+          <input type="number" id="inp_Es" value="210000" min="190000" step="5000">
+          <div id="esec_info" style="display:none;margin-top:4px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#3a8a70;line-height:1.8;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="psec">
+      <div class="sec-title">Armadura</div>
+      <div class="igrid">
+        <div class="igrp">
+          <label>Ø barra <span class="u">mm</span></label>
+          <input type="number" id="inp_D" value="12.5" min="6" max="32" step="0.5">
+        </div>
+        <div class="igrp">
+          <label>Cobrimento <span class="u">mm</span></label>
+          <input type="number" id="inp_cov" value="30" min="10" step="5">
+        </div>
+        <div class="igrp">
+          <label>Ø estribo <span class="u">mm</span></label>
+          <input type="number" id="inp_est" value="5" min="4" max="16" step="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="psec">
+      <div class="sec-title">Barras por Camada</div>
+      <table id="layerTable">
+        <thead>
+          <tr><th>Camada</th><th>Pos. (mm)</th><th>Nº barras</th></tr>
+        </thead>
+        <tbody id="layerBody"></tbody>
+      </table>
+      <div class="btn-row">
+        <button class="btn btn-add" onclick="addLayer()">+ Camada</button>
+        <button class="btn btn-rem" onclick="removeLayer()">− Remover</button>
+      </div>
+      <div class="chips" id="chipRow"></div>
+    </div>
+
+    <div class="psec">
+      <div class="sec-title">Parâmetros Calculados</div>
+      <div class="cparam" id="cpBlock">–</div>
+    </div>
+
+    <!-- ── SEÇÃO TRANSVERSAL EM PLANTA (adicionado) ── -->
+    <div class="psec">
+      <div class="sec-title">Seção Transversal — Planta</div>
+      <svg id="secSVG" viewBox="0 0 220 220" style="width:100%;display:block;background:#060e1c;border-radius:4px;border:1px solid #1a3050;"></svg>
+      <div id="secLegend" style="margin-top:7px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#3a6a88;line-height:1.9;"></div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- ═══ RIGHT PANEL ═══ -->
+  <div class="right">
+
+    <!-- Result cards -->
+    <div class="rstrip" id="rstrip">
+      <div class="rcard"><div class="rl">φPn,MAX</div><div class="rv" id="r_pmax">–</div><div class="rs">kN · Compressão pura</div></div>
+      <div class="rcard"><div class="rl">φMn,MAX</div><div class="rv" id="r_mmax">–</div><div class="rs">kN·m · Momento máximo</div></div>
+      <div class="rcard"><div class="rl">φPt (Tração)</div><div class="rv" id="r_pt">–</div><div class="rs">kN · Tração pura</div></div>
+      <div class="rcard"><div class="rl">Ponto Balanceado</div><div class="rv" id="r_bal_p" style="font-size:14px">–</div><div class="rs" id="r_bal_m">–</div></div>
+      <div class="rcard"><div class="rl">Taxa de Armadura</div><div class="rv" id="r_taxa">–</div><div class="rs">NBR 6118: 0,4% ~ 8%</div></div>
+      <div class="rcard"><div class="rl">Área de Aço</div><div class="rv" id="r_ast" style="font-size:16px">–</div><div class="rs" id="r_ast_s">–</div></div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-box">
+      <div class="chart-title">
+        Diagrama de Interação φPn × φMn
+        <span class="chart-sub" id="chartSub">–</span>
+      </div>
+      <svg id="svgChart" viewBox="0 0 760 420"></svg>
+      <div class="legend">
+        <div class="leg-item">
+          <div class="leg-line" style="background:linear-gradient(to right,#00e5b4,#00b4ff,#6040ff)"></div>
+          Envoltória de Interação
+        </div>
+        <div class="leg-item">
+          <div class="leg-line" style="border-top:1px dashed #00b4ff"></div>
+          φPn,max
+        </div>
+        <div class="leg-item">
+          <div style="width:8px;height:8px;background:#ff8800;border-radius:50%;"></div>
+          Ponto Balanceado
+        </div>
+        <div class="leg-item" style="color:#2a5a78">
+          Zona segura: interior da curva
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom info grid -->
+    <div class="bottom-grid">
+      <div class="bcard">
+        <div class="sec-title">Perfil das Barras por Camada</div>
+        <div id="barProfile">–</div>
+      </div>
+      <div class="bcard">
+        <div class="sec-title">Verificações NBR 6118</div>
+        <div id="nbr6118Checks">–</div>
+      </div>
+    </div>
+
+  </div><!-- /right -->
+</div>
+
+<!-- Tooltip -->
+<div id="tooltip"><p>φPn = <span id="tt_p">–</span> kN</p><p>φMn = <span id="tt_m">–</span> kN·m</p></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let layers = [3,0,2,0,3];  // default from worksheet
+let results = null;
+
+/* ══════════════════════════════════════════════
+   LAYER TABLE
+══════════════════════════════════════════════ */
+function buildLayerTable(){
+  const tbody = document.getElementById('layerBody');
+  tbody.innerHTML='';
+  const di = results ? results.di : [];
+  layers.forEach((n,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML=`
+      <td class="lbl-td">F${i+1}</td>
+      <td class="pos-td">${di[i]!==undefined?di[i].toFixed(1):'–'}</td>
+      <td><input type="number" min="0" step="1" value="${n}"
+           oninput="updateLayer(${i},this.value)"></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function addLayer(){layers.push(0);recalc();}
+function removeLayer(){if(layers.length>2){layers.pop();recalc();}}
+function updateLayer(i,v){layers[i]=Math.max(0,parseInt(v)||0);recalc();}
+
+/* ══════════════════════════════════════════════
+   GET INPUTS
+══════════════════════════════════════════════ */
+function gv(id){return parseFloat(document.getElementById(id).value)||0;}
+
+function getParams(){
+  return{
+    b:   gv('inp_b'),
+    h:   gv('inp_h'),
+    fck: gv('inp_fck'),
+    fyk: gv('inp_fyk'),
+    Es:  gv('inp_Es'),
+    D:   gv('inp_D'),
+    cover: gv('inp_cov'),
+    stirrupD: gv('inp_est'),
+  };
+}
+
+/* ══════════════════════════════════════════════
+   CALCULATION — NBR 6118 / ACI approach
+══════════════════════════════════════════════ */
+function compute(p, barLayers){
+  const {b,h,fck,fyk,Es,D,cover,stirrupD} = p;
+  const b_mm = b*10, h_mm = h*10;
+  const fyd   = fyk/1.15;
+  const esu   = 0.0035;
+  const na    = barLayers.length;
+
+  // β1
+  let beta1 = 0.80;
+  if(fck>50 && fck<=90) beta1 = 0.80-(fck-50)/400;
+  beta1 = Math.max(0.65, Math.min(0.85, beta1));
+
+  // Bar layer positions from compression face (mm)
+  const d1    = cover + stirrupD + D/2;
+  const delta = na>1 ? (h_mm - 2*d1)/(na-1) : 0;
+  const di    = barLayers.map((_,i)=> d1 + i*delta);
+  const n1    = barLayers.map(n=> Math.max(0,Number(n)||0));
+
+  const Ab_s  = Math.PI*D*D/4;               // mm² per bar
+  const Ntotal= n1.reduce((a,c)=>a+c, 0);
+  const Ast   = Ab_s*Ntotal;                  // mm²
+  const Ac    = b_mm*h_mm;                    // mm²
+  const ds    = di[na-1];                     // extreme tension bar (furthest from compression face)
+
+  // φPn,max (NBR 6118 — compressão centrada com excentricidade mínima)
+  const phi_max = 0.80;
+  const phiPn_max = 0.8*phi_max*(0.85*fck*(Ac-Ast)+fyk*Ast)/1000; // kN
+
+  // φPt — tração pura
+  const phiPt = -(0.9*fyd*Ast)/1000; // kN  (negativo = tração)
+
+  // Balanced strain point
+  const ey     = fyk/Es;
+  const c_bal  = esu/(esu+ey)*ds;
+  const a_bal  = beta1*c_bal;
+  const Fc_bal = 0.85*fck*a_bal*b_mm;
+  let sFsi_bal=0, sMsi_bal=0;
+  n1.forEach((ni,i)=>{
+    if(ni===0)return;
+    const es = esu*(di[i]-c_bal)/c_bal;
+    const fs = Math.sign(es)*Math.min(Math.abs(es*Es),fyd);
+    sFsi_bal += Ab_s*ni*fs;
+    sMsi_bal += Ab_s*ni*fs*(di[i]-h_mm/2);
+  });
+  const Pn_bal = (Fc_bal - sFsi_bal)/1000;
+  const Mn_bal = (Fc_bal*(h_mm/2-a_bal/2)+sMsi_bal)/1e6;
+  const balancedPoint={
+    phiPn: +(0.65*Pn_bal).toFixed(2),
+    phiMn: +(0.65*Math.abs(Mn_bal)).toFixed(2)
+  };
+
+  // ── Interaction curve ──
+  // Sweep "a" (Whitney block depth) from 0 to ~1.05·h
+  const STEPS=1000;
+  const pts=[];
+  for(let k=0;k<=STEPS;k++){
+    const a = (k/STEPS)*h_mm*1.05;
+    const c = a<0.001 ? 0.0001 : a/beta1;
+
+    // Extreme tension fiber strain
+    const es_ext = ds>0 ? esu*(ds-c)/c : -1;
+
+    // φ factor (NBR 6118 §17.4 / ACI 318-19)
+    let phi;
+    if(es_ext >= 0.005)           phi=0.90;
+    else if(es_ext >=0.002)       phi=0.65+0.25*(es_ext-0.002)/(0.005-0.002);
+    else                          phi=0.65;
+
+    // Concrete compression
+    const a_eff = Math.min(a, h_mm);
+    const Fc    = 0.85*fck*a_eff*b_mm;
+
+    // Steel layers
+    let sFsi=0, sMsi=0;
+    n1.forEach((ni,i)=>{
+      if(ni===0)return;
+      const esi = esu*(di[i]-c)/c;
+      const fsi = Math.sign(esi)*Math.min(Math.abs(esi*Es),fyd);
+      sFsi += Ab_s*ni*fsi;
+      sMsi += Ab_s*ni*fsi*(di[i]-h_mm/2);
+    });
+
+    const Pn_raw = (Fc - sFsi)/1000;
+    const Mn_raw = (Fc*(h_mm/2-a_eff/2)+sMsi)/1e6;
+
+    let phiPn = phi*Pn_raw;
+    let phiMn = phi*Math.abs(Mn_raw);
+    if(phiPn > phiPn_max) phiPn = phiPn_max;
+
+    pts.push({phiPn:+phiPn.toFixed(3), phiMn:+phiMn.toFixed(3)});
+  }
+  // Traction end — close curve back to origin area
+  pts.push({phiPn:+phiPt.toFixed(3), phiMn:0});
+
+  const maxM   = Math.max(...pts.map(p=>p.phiMn));
+  const minP   = Math.min(phiPt, Math.min(...pts.map(p=>p.phiPn)));
+
+  return{
+    pts, phiPn_max, phiPt, balancedPoint,
+    maxM, minP, di, n1, Ntotal, Ast, Ac, Ab_s,
+    taxaAco:+(Ast/Ac*100).toFixed(2),
+    beta1, d1:+d1.toFixed(1), delta:+delta.toFixed(2),
+    fyd:+(fyd).toFixed(1),
+  };
+}
+
+/* ══════════════════════════════════════════════
+   SVG CHART
+══════════════════════════════════════════════ */
+const W=760, H=420, ML=72, MR=40, MT=18, MB=52;
+const CW=W-ML-MR, CH=H-MT-MB;
+
+function mapX(m,minM,maxM){ return ML + (m-minM)/(maxM-minM)*CW; }
+function mapY(p,minP,maxP){ return MT + (1-(p-minP)/(maxP-minP))*CH; }
+
+function niceAxis(lo,hi,ticks=8){
+  const raw=(hi-lo)/ticks;
+  const mag=Math.pow(10,Math.floor(Math.log10(raw)));
+  const nice=[1,2,2.5,5,10].find(f=>f*mag>=raw)||10;
+  const step=nice*mag;
+  const lo2=Math.floor(lo/step)*step;
+  const res=[];
+  for(let v=lo2;v<=hi+step*0.01;v+=step) res.push(+v.toFixed(6));
+  return res;
+}
+
+function drawChart(res, p){
+  const svg=document.getElementById('svgChart');
+
+  const minM=0, maxM_raw=res.maxM||1;
+  const maxM = maxM_raw*1.12;
+  const minP_raw = res.minP;
+  const maxP_raw = res.phiPn_max;
+  const pRange  = maxP_raw - minP_raw;
+  const minP    = minP_raw - pRange*0.08;
+  const maxP    = maxP_raw + pRange*0.06;
+
+  const xTicks = niceAxis(minM, maxM, 8);
+  const yTicks = niceAxis(minP, maxP, 8);
+
+  // Build SVG string
+  let s='';
+
+  // ── Defs (gradient for curve) ──
+  s+=`<defs>
+    <linearGradient id="cg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00e5b4"/>
+      <stop offset="50%" stop-color="#00b4ff"/>
+      <stop offset="100%" stop-color="#6040ff"/>
+    </linearGradient>
+    <clipPath id="cp"><rect x="${ML}" y="${MT}" width="${CW}" height="${CH}"/></clipPath>
+  </defs>`;
+
+  // Background
+  s+=`<rect x="${ML}" y="${MT}" width="${CW}" height="${CH}" fill="#060e1c" rx="3"/>`;
+
+  // Grid lines
+  xTicks.forEach(v=>{
+    const x=mapX(v,minM,maxM);
+    if(x<ML||x>ML+CW) return;
+    s+=`<line x1="${x}" y1="${MT}" x2="${x}" y2="${MT+CH}" stroke="#12283e" stroke-width="1"/>`;
+    s+=`<text x="${x}" y="${MT+CH+16}" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="10" fill="#3a6a88">${v%1===0?v:v.toFixed(1)}</text>`;
+  });
+  yTicks.forEach(v=>{
+    const y=mapY(v,minP,maxP);
+    if(y<MT||y>MT+CH) return;
+    s+=`<line x1="${ML}" y1="${y}" x2="${ML+CW}" y2="${y}" stroke="#12283e" stroke-width="1"/>`;
+    s+=`<text x="${ML-8}" y="${y+4}" text-anchor="end" font-family="Share Tech Mono,monospace" font-size="10" fill="#3a6a88">${Math.round(v)}</text>`;
+  });
+
+  // Zero line
+  const y0=mapY(0,minP,maxP);
+  if(y0>=MT && y0<=MT+CH)
+    s+=`<line x1="${ML}" y1="${y0}" x2="${ML+CW}" y2="${y0}" stroke="#1e4a6a" stroke-width="1.5" stroke-dasharray="6 3"/>`;
+
+  // φPn,max line
+  const yPmax=mapY(res.phiPn_max,minP,maxP);
+  if(yPmax>=MT && yPmax<=MT+CH){
+    s+=`<line x1="${ML}" y1="${yPmax}" x2="${ML+CW}" y2="${yPmax}" stroke="#00b4ff" stroke-width="1" stroke-dasharray="7 4" opacity=".6"/>`;
+    s+=`<text x="${ML+CW-4}" y="${yPmax-5}" text-anchor="end" font-family="Share Tech Mono,monospace" font-size="9" fill="#00b4ff" opacity=".8">φPn,max</text>`;
+  }
+
+  // ── Curve ──
+  let pathD='';
+  res.pts.forEach((pt,i)=>{
+    const x=mapX(pt.phiMn,minM,maxM);
+    const y=mapY(pt.phiPn,minP,maxP);
+    pathD += (i===0?`M${x},${y}`:`L${x},${y}`);
+  });
+  s+=`<path d="${pathD}" fill="none" stroke="url(#cg)" stroke-width="2.5" stroke-linejoin="round" clip-path="url(#cp)"/>`;
+
+  // ── Balanced point ──
+  const bx=mapX(res.balancedPoint.phiMn,minM,maxM);
+  const by=mapY(res.balancedPoint.phiPn,minP,maxP);
+  if(bx>=ML && bx<=ML+CW && by>=MT && by<=MT+CH){
+    s+=`<circle cx="${bx}" cy="${by}" r="5" fill="#ff8800" stroke="#0b1220" stroke-width="1.5"/>`;
+    s+=`<text x="${bx+10}" y="${by-7}" font-family="Share Tech Mono,monospace" font-size="9" fill="#ff8800">Bal.(${res.balancedPoint.phiPn},${res.balancedPoint.phiMn})</text>`;
+  }
+
+  // Axes border
+  s+=`<rect x="${ML}" y="${MT}" width="${CW}" height="${CH}" fill="none" stroke="#1e3a5a" stroke-width="1"/>`;
+
+  // Axis labels
+  s+=`<text x="${ML+CW/2}" y="${H-6}" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="12" fill="#6899b8">φMn (kN·m)</text>`;
+  s+=`<text transform="rotate(-90,14,${MT+CH/2})" x="14" y="${MT+CH/2}" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="12" fill="#6899b8">φPn (kN)</text>`;
+
+  // Invisible hover overlay (points)
+  s+=`<g id="hoverDots" clip-path="url(#cp)">`;
+  res.pts.forEach((pt,i)=>{
+    if(i%10!==0) return;
+    const x=mapX(pt.phiMn,minM,maxM);
+    const y=mapY(pt.phiPn,minP,maxP);
+    s+=`<circle cx="${x}" cy="${y}" r="5" fill="transparent" stroke="none"
+         data-pn="${pt.phiPn}" data-mn="${pt.phiMn}"
+         class="hDot"/>`;
+  });
+  s+=`</g>`;
+
+  svg.innerHTML=s;
+
+  // Hover listeners
+  document.querySelectorAll('.hDot').forEach(el=>{
+    el.addEventListener('mousemove',e=>{
+      const tt=document.getElementById('tooltip');
+      document.getElementById('tt_p').textContent=el.dataset.pn;
+      document.getElementById('tt_m').textContent=el.dataset.mn;
+      tt.style.display='block';
+      tt.style.left=(e.clientX+14)+'px';
+      tt.style.top=(e.clientY-10)+'px';
+    });
+    el.addEventListener('mouseleave',()=>document.getElementById('tooltip').style.display='none');
+  });
+
+  // SVG area mousemove for smooth tooltip
+  svg.addEventListener('mousemove',function(e){
+    const rect=svg.getBoundingClientRect();
+    const scaleX=W/rect.width, scaleY=H/rect.height;
+    const sx=(e.clientX-rect.left)*scaleX;
+    const sy=(e.clientY-rect.top)*scaleY;
+    if(sx<ML||sx>ML+CW||sy<MT||sy>MT+CH){
+      document.getElementById('tooltip').style.display='none';
+      return;
+    }
+    // Find closest point
+    const mVal=(sx-ML)/CW*(maxM-minM)+minM;
+    let best=null, bestD=1e9;
+    res.pts.forEach(pt=>{
+      const d=Math.abs(pt.phiMn-mVal);
+      if(d<bestD){bestD=d;best=pt;}
+    });
+    if(best){
+      const tt=document.getElementById('tooltip');
+      document.getElementById('tt_p').textContent=best.phiPn.toFixed(1);
+      document.getElementById('tt_m').textContent=best.phiMn.toFixed(1);
+      tt.style.display='block';
+      tt.style.left=(e.clientX+14)+'px';
+      tt.style.top=(e.clientY-10)+'px';
+    }
+  });
+  svg.addEventListener('mouseleave',()=>document.getElementById('tooltip').style.display='none');
+}
+
+/* ══════════════════════════════════════════════
+   UPDATE UI
+══════════════════════════════════════════════ */
+function updateUI(res, p){
+  // Header
+  document.getElementById('hdrInfo').textContent=
+    `β₁=${res.beta1.toFixed(2)} · φPn,max=${res.phiPn_max} kN · A_st=${(res.Ast/100).toFixed(2)} cm²`;
+
+  // Result cards
+  document.getElementById('r_pmax').textContent=res.phiPn_max.toFixed(1);
+  document.getElementById('r_mmax').textContent=res.maxM.toFixed(1);
+  document.getElementById('r_pt').textContent=res.phiPt.toFixed(1);
+  document.getElementById('r_bal_p').textContent=res.balancedPoint.phiPn+' kN';
+  document.getElementById('r_bal_m').textContent=res.balancedPoint.phiMn+' kN·m';
+
+  const taxaEl=document.getElementById('r_taxa');
+  taxaEl.textContent=res.taxaAco+'%';
+  taxaEl.className='rv'+(res.taxaAco<0.4||res.taxaAco>8?' err':res.taxaAco<1?' warn':'');
+
+  document.getElementById('r_ast').textContent=(res.Ast/100).toFixed(2);
+  document.getElementById('r_ast_s').textContent=
+    `cm² · ${res.Ntotal} barras Ø${p.D}mm`;
+
+  // Chart subtitle
+  document.getElementById('chartSub').textContent=
+    `Pilar ${p.b}×${p.h}cm · fck=${p.fck}MPa · fyk=${p.fyk}MPa`;
+
+  // Computed params
+  document.getElementById('cpBlock').innerHTML=`
+    β₁ = <span>${res.beta1.toFixed(3)}</span><br>
+    d₁ = <span>${res.d1} mm</span><br>
+    Δ  = <span>${res.delta} mm</span><br>
+    Ac = <span>${(res.Ac/100).toFixed(1)} cm²</span><br>
+    Ab,s = <span>${res.Ab_s.toFixed(2)} mm²</span><br>
+    fyd = <span>${res.fyd} MPa</span>`;
+
+  // Chips
+  document.getElementById('chipRow').innerHTML=`
+    <div class="chip">n = ${res.Ntotal} barras</div>
+    <div class="chip">A_st = ${(res.Ast/100).toFixed(2)} cm²</div>
+    <div class="chip">ρ = ${res.taxaAco}%</div>`;
+
+  // Bar profile
+  const maxN=Math.max(...res.n1.filter(n=>n>0),1);
+  let bpHtml='';
+  res.n1.forEach((n,i)=>{
+    const pct=Math.min(100,(n/maxN)*100);
+    bpHtml+=`<div class="bar-row">
+      <div class="bar-label">F${i+1} (${res.di[i]!==undefined?res.di[i].toFixed(0):'–'}mm)</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="bar-val">${n}</div>
+    </div>`;
+  });
+  document.getElementById('barProfile').innerHTML=bpHtml||'–';
+
+  // NBR checks
+  const checks=[
+    {l:'ρ ≥ 0.4%', ok:res.taxaAco>=0.4},
+    {l:'ρ ≤ 8.0%', ok:res.taxaAco<=8.0},
+    {l:'b ≥ 12 cm', ok:p.b>=12},
+    {l:'fck ≥ 20 MPa', ok:p.fck>=20},
+    {l:'fck ≤ 90 MPa', ok:p.fck<=90},
+    {l:'Ø ≥ 10 mm', ok:p.D>=10},
+    {l:'Es ≥ 190 000 MPa', ok:p.Es>=190000},
+  ];
+  document.getElementById('nbr6118Checks').innerHTML=
+    checks.map(c=>`<div class="chk-row">
+      <span class="${c.ok?'chk-ok':'chk-fail'}">${c.ok?'✓':'✗'}</span>
+      <span style="color:${c.ok?'#4a9a80':'#a04040'}">${c.l}</span>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════
+   RECALC (main entry)
+══════════════════════════════════════════════ */
+function recalc(){
+  const p=getParams();
+  results=compute(p, layers);
+  buildLayerTable();   // rebuild with updated positions
+  updateUI(results, p);
+  drawChart(results, p);
+}
+
+/* ══════════════════════════════════════════════
+   AUTO-CALC Es — NBR 6118 item 8.2.8
+   αse = 0.8 + 0.2·(fck/80)
+   Ec  = 5600·√fck  (MPa)  — módulo tangente inicial
+   Esec = αse · Ec           — módulo de deformação secante
+══════════════════════════════════════════════ */
+function calcEsecNBR(fck){
+  const ase  = 0.8 + 0.2*(fck/80);
+  const Ec   = 5600*Math.sqrt(fck);
+  const Esec = ase*Ec;
+  return {ase, Ec, Esec};
+}
+
+function applyEsecNBR(){
+  const fck = parseFloat(document.getElementById('inp_fck').value)||25;
+  const {ase,Ec,Esec} = calcEsecNBR(fck);
+  document.getElementById('inp_Es').value = Math.round(Esec);
+  document.getElementById('es_auto_badge').style.display='inline';
+  document.getElementById('esec_info').style.display='block';
+  document.getElementById('esec_info').innerHTML=
+    `αse = 0.8 + 0.2·(${fck}/80) = <span style="color:#00e5b4">${ase.toFixed(4)}</span><br>`+
+    `Ec = 5600·√${fck} = <span style="color:#00e5b4">${Ec.toFixed(1)} MPa</span><br>`+
+    `Esec = αse·Ec = <span style="color:#00e5b4">${Math.round(Esec)} MPa</span>`;
+}
+
+// When fck changes → recalculate Esec and update Es input, then recalc diagram
+document.getElementById('inp_fck').addEventListener('input', function(){
+  applyEsecNBR();
+  recalc();
+});
+
+// When user manually edits Es → hide the AUTO badge (manual override)
+document.getElementById('inp_Es').addEventListener('input', function(){
+  document.getElementById('es_auto_badge').style.display='none';
+  document.getElementById('esec_info').style.display='none';
+});
+
+/* ══════════════════════════════════════════════
+   BIND ALL INPUTS
+══════════════════════════════════════════════ */
+// inp_fck is bound separately above (auto-calc Esec + recalc)
+['inp_b','inp_h','inp_fyk','inp_Es','inp_D','inp_cov','inp_est']
+  .forEach(id=>document.getElementById(id).addEventListener('input',recalc));
+
+/* ══════════════════════════════════════════════
+   SEÇÃO TRANSVERSAL — PLANTA BAIXA (adicionado)
+   Desenha o concreto, estribos, barras e cotas.
+   Lê os mesmos inputs já existentes — sem mudar
+   nenhuma lógica anterior.
+══════════════════════════════════════════════ */
+function drawSection(){
+  const svg   = document.getElementById('secSVG');
+  if(!svg || !results) return;
+
+  const p     = getParams();            // reutiliza função já existente
+  const b_mm  = p.b * 10;              // largura em mm
+  const h_mm  = p.h * 10;              // altura em mm
+  const cover = p.cover;               // cobrimento em mm
+  const est   = p.stirrupD;            // Ø estribo mm
+  const D     = p.D;                   // Ø barra mm
+
+  // Canvas lógico: mapeamos b_mm × h_mm em 220×220 c/ margem
+  const PAD  = 14;
+  const VW   = 220, VH = 220;
+  const scale= Math.min((VW-2*PAD)/b_mm, (VH-2*PAD)/h_mm);
+  const ox   = (VW - b_mm*scale)/2;   // offset X para centralizar
+  const oy   = (VH - h_mm*scale)/2;   // offset Y
+
+  const sx = v => ox + v*scale;        // mm → svg-X
+  const sy = v => oy + v*scale;        // mm → svg-Y
+  const sr = v => v*scale;             // mm → svg-len
+
+  // Raio visual das barras (mínimo 2.5px para visibilidade)
+  const barR = Math.max(2.5, sr(D/2));
+  const estT = Math.max(0.8, sr(est));
+
+  let s='';
+
+  // ── 1. CONCRETO (retângulo cheio) ──
+  s+=`<rect x="${sx(0)}" y="${sy(0)}" width="${sr(b_mm)}" height="${sr(h_mm)}"
+       fill="#1a2e44" stroke="#2a4a6a" stroke-width="1.2" rx="1"/>`;
+
+  // ── 2. ESTRIBO ──
+  const ex1 = sx(cover);
+  const ey1 = sy(cover);
+  const ew  = sr(b_mm - 2*cover);
+  const eh  = sr(h_mm - 2*cover);
+  const eR  = Math.max(2, sr(est*1.5)); // raio do canto do estribo
+  s+=`<rect x="${ex1}" y="${ey1}" width="${ew}" height="${eh}"
+       fill="none" stroke="#00b4ff" stroke-width="${estT}" rx="${eR}" opacity=".7"/>`;
+
+  // ── 3. BARRAS DE AÇO ──
+  // Posições lidas dos resultados já calculados (di = do compressão)
+  // di é posição ao longo de h. Barras estão na face b.
+  // Posição y no SVG = sy(di[i])
+  // Posição x: distribuída entre (cover+est+D/2) e (b_mm - cover-est-D/2)
+  const x_left  = cover + est + D/2;
+  const x_right = b_mm - cover - est - D/2;
+
+  results.n1.forEach((ni, i)=>{
+    if(ni===0) return;
+    const yPos = results.di[i];   // mm do topo (compressão)
+    const yS   = sy(yPos);
+
+    if(ni===1){
+      // barra centrada
+      const xS = sx(b_mm/2);
+      s+=barDot(xS, yS, barR);
+    } else {
+      // distribui ni barras uniformemente em x entre x_left e x_right
+      for(let j=0;j<ni;j++){
+        const xPos = ni===1 ? b_mm/2 : x_left + j*(x_right-x_left)/(ni-1);
+        s+=barDot(sx(xPos), yS, barR);
+      }
+    }
+  });
+
+  // ── 4. COTAS ──
+  // Cota de largura (b) — abaixo
+  const cotaY = sy(h_mm)+8;
+  s+=`<line x1="${sx(0)}" y1="${cotaY}" x2="${sx(b_mm)}" y2="${cotaY}" stroke="#3a6a88" stroke-width=".8"/>`;
+  s+=`<line x1="${sx(0)}" y1="${cotaY-4}" x2="${sx(0)}" y2="${cotaY+4}" stroke="#3a6a88" stroke-width=".8"/>`;
+  s+=`<line x1="${sx(b_mm)}" y1="${cotaY-4}" x2="${sx(b_mm)}" y2="${cotaY+4}" stroke="#3a6a88" stroke-width=".8"/>`;
+  s+=`<text x="${sx(b_mm/2)}" y="${cotaY+11}" text-anchor="middle"
+       font-family="Share Tech Mono,monospace" font-size="9" fill="#5ab4d4">b=${p.b} cm</text>`;
+
+  // Cota de altura (h) — à direita
+  const cotaX = sx(b_mm)+8;
+  s+=`<line x1="${cotaX}" y1="${sy(0)}" x2="${cotaX}" y2="${sy(h_mm)}" stroke="#3a6a88" stroke-width=".8"/>`;
+  s+=`<line x1="${cotaX-4}" y1="${sy(0)}" x2="${cotaX+4}" y2="${sy(0)}" stroke="#3a6a88" stroke-width=".8"/>`;
+  s+=`<line x1="${cotaX-4}" y1="${sy(h_mm)}" x2="${cotaX+4}" y2="${sy(h_mm)}" stroke="#3a6a88" stroke-width=".8"/>`;
+  s+=`<text x="${cotaX+12}" y="${sy(h_mm/2)+4}" text-anchor="middle"
+       font-family="Share Tech Mono,monospace" font-size="9" fill="#5ab4d4"
+       transform="rotate(-90,${cotaX+12},${sy(h_mm/2)})">h=${p.h} cm</text>`;
+
+  // ── 5. LABEL COBRIMENTO (seta indicativa) ──
+  s+=`<line x1="${sx(0)}" y1="${sy(cover)}" x2="${sx(cover)}" y2="${sy(cover)}"
+       stroke="#ff8800" stroke-width=".7" stroke-dasharray="3 2" opacity=".6"/>`;
+  s+=`<text x="${sx(cover/2)}" y="${sy(cover)-3}" text-anchor="middle"
+       font-family="Share Tech Mono,monospace" font-size="8" fill="#ff8800" opacity=".7">c</text>`;
+
+  // ── 6. INDICADOR COMPRESSÃO / TRAÇÃO ──
+  s+=`<text x="${sx(b_mm/2)}" y="${sy(0)-4}" text-anchor="middle"
+       font-family="Share Tech Mono,monospace" font-size="8" fill="#ff6060" letter-spacing="1">▲ COMPRESSÃO</text>`;
+  s+=`<text x="${sx(b_mm/2)}" y="${sy(h_mm)+30}" text-anchor="middle"
+       font-family="Share Tech Mono,monospace" font-size="8" fill="#60d4ff" letter-spacing="1">▼ TRAÇÃO</text>`;
+
+  svg.innerHTML=s;
+
+  // Legenda abaixo do SVG
+  document.getElementById('secLegend').innerHTML=
+    `<span style="color:#00b4ff">■</span> Estribo Ø${est}mm &nbsp;`+
+    `<span style="color:#00e5b4">●</span> Barra Ø${D}mm &nbsp;`+
+    `<span style="color:#ff8800">–</span> Cobrimento ${cover}mm<br>`+
+    `Total: <span style="color:#a0d4f5">${results.Ntotal} barras</span> &nbsp;`+
+    `Ast = <span style="color:#a0d4f5">${(results.Ast/100).toFixed(2)} cm²</span>`;
+}
+
+function barDot(cx, cy, r){
+  return `<circle cx="${cx}" cy="${cy}" r="${r}"
+    fill="#0b2030" stroke="#00e5b4" stroke-width="${Math.max(0.8,r*0.35)}"/>
+    <circle cx="${cx}" cy="${cy}" r="${Math.max(0.6,r*0.35)}" fill="#00e5b4" opacity=".7"/>`;
+}
+
+// ── WRAPPER: executa drawSection após cada recalc sem modificar recalc ──
+;(function(){
+  const _orig = recalc;
+  recalc = function(){ _orig(); drawSection(); };
+})();
+
+
+applyEsecNBR();  // pré-calcula Esec para o fck inicial (25 MPa)
+recalc();
+</script>
+</body>
+</html>
